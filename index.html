@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="referrer" content="no-referrer" />
+    <title>Tenancia — le prototype</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+    />
+    <style>
+      :root {
+        --couleur-fond: #F4F1EC;
+        --couleur-surface: #FFFFFF;
+        --couleur-surface-attenuee: #F7F4EF;
+        --couleur-accent: #1F6F5C;
+        --couleur-sur-accent: #FFFFFF;
+        --couleur-accent-profond: #20594A;
+        --couleur-sur-accent-discrete: rgba(255, 255, 255, 0.82);
+        --couleur-encre: #241F1A;
+        --couleur-encre-etiquette: #6B625A;
+        --couleur-bordure-champ: #DCD4C9;
+        --couleur-erreur-encre: #963A1C;
+        --police-texte: "Manrope", system-ui, sans-serif;
+        --police-chiffres: "IBM Plex Mono", ui-monospace, monospace;
+        --graisse-moyenne: 500;
+        --graisse-demi: 600;
+        --graisse-forte: 700;
+        --graisse-titre: 800;
+        --taille-titre: 1.875rem;
+        --interligne-titre: 1.1;
+        --approche-titre: -0.02em;
+        --taille-titre-carte: 1rem;
+        --taille-corps: 0.9375rem;
+        --interligne-corps: 1.55;
+        --taille-bouton: 0.9375rem;
+        --taille-petit: 0.8125rem;
+        --taille-etiquette: 0.75rem;
+        --approche-mot-de-passe: 0.12em;
+        --approche-logo: -0.04em;
+        --interligne-serre: 1;
+        --proportion-mot-du-logo: 0.6;
+        --espace-4: 4px;
+        --espace-8: 8px;
+        --espace-16: 16px;
+        --espace-24: 24px;
+        --espace-32: 32px;
+        --marge-ecran: 24px;
+        --epaisseur-trait: 1px;
+        --opacite-en-cours: 0.75;
+        --rayon-option: 11px;
+        --rayon-controle: 14px;
+        --rayon-champ: 18px;
+        --rayon-panneau: 28px;
+        --hauteur-champ: 64px;
+        --hauteur-controle-grand: 56px;
+        --taille-logo-en-verre: 40px;
+        --ombre-forte: 0 1px 2px rgba(36, 31, 26, 0.05), 0 28px 60px -32px rgba(36, 31, 26, 0.4);
+        --halo-focus: 0 0 0 3px rgba(31, 111, 92, 0.16);
+        --degrade-bandeau: linear-gradient(170deg, var(--couleur-accent) 0%, var(--couleur-accent-profond) 100%);
+        --opacite-motif: 0.1;
+        --largeur-toit: 48px;
+        --estompe-motif: linear-gradient(to left, #000 0%, transparent 78%);
+        --verre-fond: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 100%);
+        --verre-bord: rgba(255, 255, 255, 0.22);
+        --verre-reflet: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+        --duree-courte: 0.18s;
+        --echelle-appui: 0.98;
+      }
+    </style>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        background: var(--couleur-fond);
+        color: var(--couleur-encre);
+        font-family: var(--police-texte);
+        font-size: var(--taille-corps);
+        line-height: var(--interligne-corps);
+      }
+
+      /* Une colonne à la largeur d'un téléphone : neuf toits du motif. */
+      .verrou {
+        display: flex;
+        flex-direction: column;
+        width: min(100%, calc(var(--largeur-toit) * 9));
+        min-height: 100%;
+        background: var(--couleur-surface);
+        box-shadow: var(--ombre-forte);
+      }
+
+      .verrou[hidden],
+      .verrou__erreur[hidden] {
+        display: none;
+      }
+
+      .verrou__bandeau {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: var(--espace-8);
+        padding: var(--espace-24) var(--marge-ecran) calc(var(--espace-32) + var(--rayon-panneau));
+        background: var(--degrade-bandeau);
+        color: var(--couleur-sur-accent);
+        overflow: hidden;
+      }
+
+      .verrou__bandeau::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='56' viewBox='0 0 48 56' fill='none' stroke='%23FFFFFF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 22 24 8 42 22'/%3E%3Cpath d='M-18 50 0 36 18 50'/%3E%3Cpath d='M30 50 48 36 66 50'/%3E%3C/svg%3E");
+        background-size: var(--largeur-toit) auto;
+        opacity: var(--opacite-motif);
+        mask-image: var(--estompe-motif);
+        -webkit-mask-image: var(--estompe-motif);
+        pointer-events: none;
+      }
+
+      .verrou__bandeau > * {
+        position: relative;
+      }
+
+      .verrou__logo {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--espace-8);
+        margin-bottom: var(--espace-32);
+      }
+
+      .verrou__carreau {
+        display: grid;
+        place-items: center;
+        width: var(--taille-logo-en-verre);
+        height: var(--taille-logo-en-verre);
+        border: var(--epaisseur-trait) solid var(--verre-bord);
+        border-radius: var(--rayon-option);
+        background: var(--verre-fond);
+        box-shadow: var(--verre-reflet);
+      }
+
+      .verrou__carreau svg {
+        width: 60%;
+        height: 60%;
+      }
+
+      .verrou__mot {
+        font-size: calc(var(--taille-logo-en-verre) * var(--proportion-mot-du-logo));
+        font-weight: var(--graisse-titre);
+        letter-spacing: var(--approche-logo);
+        line-height: var(--interligne-serre);
+      }
+
+      .verrou__titre {
+        margin: 0;
+        font-size: var(--taille-titre);
+        font-weight: var(--graisse-titre);
+        line-height: var(--interligne-titre);
+        letter-spacing: var(--approche-titre);
+      }
+
+      .verrou__corps {
+        margin: 0;
+        color: var(--couleur-sur-accent-discrete);
+      }
+
+      .verrou__plateau {
+        position: relative;
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        gap: var(--espace-16);
+        margin-top: calc(var(--rayon-panneau) * -1);
+        padding: var(--espace-32) var(--marge-ecran) var(--espace-24);
+        border-radius: var(--rayon-panneau) var(--rayon-panneau) 0 0;
+        background: var(--couleur-surface);
+      }
+
+      .verrou__champ {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: var(--espace-4);
+        min-height: var(--hauteur-champ);
+        padding: var(--espace-8) var(--espace-16);
+        border: var(--epaisseur-trait) solid var(--couleur-bordure-champ);
+        border-radius: var(--rayon-champ);
+        background: var(--couleur-surface-attenuee);
+        cursor: text;
+        transition:
+          border-color var(--duree-courte),
+          box-shadow var(--duree-courte),
+          background var(--duree-courte);
+      }
+
+      .verrou__champ:focus-within {
+        border-color: var(--couleur-accent);
+        background: var(--couleur-surface);
+        box-shadow: var(--halo-focus);
+      }
+
+      .verrou__libelle {
+        color: var(--couleur-encre-etiquette);
+        font-size: var(--taille-etiquette);
+        font-weight: var(--graisse-demi);
+      }
+
+      /* Seize points : en dessous, un iPhone agrandit la page dès qu'on touche le champ. */
+      .verrou__saisie {
+        width: 100%;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: var(--couleur-encre);
+        font-family: var(--police-chiffres);
+        font-size: var(--taille-titre-carte);
+        font-weight: var(--graisse-moyenne);
+        letter-spacing: var(--approche-mot-de-passe);
+        outline: none;
+      }
+
+      .verrou__erreur {
+        margin: 0;
+        color: var(--couleur-erreur-encre);
+        font-size: var(--taille-petit);
+      }
+
+      .verrou__bouton {
+        margin-top: auto;
+        min-height: var(--hauteur-controle-grand);
+        padding: var(--espace-8) var(--espace-16);
+        border: 0;
+        border-radius: var(--rayon-controle);
+        background: var(--couleur-accent);
+        color: var(--couleur-sur-accent);
+        font-family: inherit;
+        font-size: var(--taille-bouton);
+        font-weight: var(--graisse-forte);
+        cursor: pointer;
+        transition:
+          transform var(--duree-courte),
+          opacity var(--duree-courte);
+      }
+
+      .verrou__bouton:active {
+        transform: scale(var(--echelle-appui));
+      }
+
+      .verrou__bouton:disabled {
+        opacity: var(--opacite-en-cours);
+        cursor: default;
+      }
+
+      .verrou__bouton:focus-visible {
+        outline: none;
+        box-shadow: var(--halo-focus);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="verrou" hidden>
+      <header class="verrou__bandeau">
+        <span class="verrou__logo" role="img" aria-label="Tenancia">
+          <span class="verrou__carreau">
+            <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+              <path d="M24 31 L50 12 L76 31" stroke="currentColor" stroke-width="13" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M14 41h72v15H57.5v33h-15V56H14z" fill="currentColor" />
+            </svg>
+          </span>
+          <span class="verrou__mot" aria-hidden="true">Tenancia</span>
+        </span>
+        <h1 class="verrou__titre">Le prototype</h1>
+        <p class="verrou__corps">Il est réservé. Saisissez le mot de passe qui vous a été remis.</p>
+      </header>
+      <form class="verrou__plateau" novalidate>
+        <label class="verrou__champ">
+          <span class="verrou__libelle">Mot de passe</span>
+          <input
+            class="verrou__saisie"
+            type="password"
+            autocomplete="current-password"
+            autocapitalize="off"
+            autocorrect="off"
+            spellcheck="false"
+          />
+        </label>
+        <p class="verrou__erreur" role="alert" hidden></p>
+        <button class="verrou__bouton" type="submit">Ouvrir le prototype</button>
+      </form>
+    </main>
+    <noscript>Ce prototype a besoin de JavaScript pour s’ouvrir.</noscript>
+
+    <script>
+      (function () {
+        'use strict';
+
+        var verrou = document.querySelector('.verrou');
+        var formulaire = document.querySelector('.verrou__plateau');
+        var saisie = document.querySelector('.verrou__saisie');
+        var erreur = document.querySelector('.verrou__erreur');
+        var bouton = document.querySelector('.verrou__bouton');
+
+        // La clé retenue ne vaut que pour cette publication : la suivante a une autre charge.
+        var NOM = 'tenancia-prototype:prototype-866dd1a3ef0a.js';
+        var charge = null;
+        var quandOnValide = function () {};
+
+        function octets(texte) {
+          var signes = atob(texte);
+          var lus = new Uint8Array(signes.length);
+          for (var i = 0; i < signes.length; i++) lus[i] = signes.charCodeAt(i);
+          return lus;
+        }
+
+        function texte(tampon) {
+          var lus = new Uint8Array(tampon);
+          var suite = '';
+          for (var i = 0; i < lus.length; i++) suite += String.fromCharCode(lus[i]);
+          return btoa(suite);
+        }
+
+        // Un navigateur peut refuser sa mémoire à une page : le mot de passe se redemande alors
+        // à chaque écran, mais le prototype s'ouvre.
+        function cleRetenue() {
+          try {
+            return window.sessionStorage.getItem(NOM);
+          } catch (_) {
+            return null;
+          }
+        }
+
+        function retenir(cle) {
+          try {
+            window.sessionStorage.setItem(NOM, cle);
+          } catch (_) {}
+        }
+
+        function oublier() {
+          try {
+            window.sessionStorage.removeItem(NOM);
+          } catch (_) {}
+        }
+
+        function dire(message) {
+          erreur.textContent = message;
+          erreur.hidden = false;
+        }
+
+        function demander(libelle) {
+          verrou.hidden = false;
+          bouton.disabled = false;
+          bouton.textContent = libelle || 'Ouvrir le prototype';
+          saisie.focus();
+        }
+
+        function deriver(motDePasse) {
+          return window.crypto.subtle
+            .importKey('raw', new TextEncoder().encode(motDePasse), 'PBKDF2', false, ['deriveBits'])
+            .then(function (base) {
+              return window.crypto.subtle.deriveBits(
+                { name: 'PBKDF2', hash: 'SHA-256', salt: octets(charge.sel), iterations: charge.tours },
+                base,
+                256,
+              );
+            });
+        }
+
+        function ouvrir(cle) {
+          return window.crypto.subtle
+            .importKey('raw', cle, 'AES-GCM', false, ['decrypt'])
+            .then(function (importee) {
+              return window.crypto.subtle.decrypt({ name: 'AES-GCM', iv: octets(charge.iv) }, importee, octets(charge.donnees));
+            })
+            .then(function (clair) {
+              return new TextDecoder().decode(clair);
+            });
+        }
+
+        // Le prototype prend la place de la page : ses scripts se lancent comme s'il avait été servi.
+        // Pas avant que cette page ait fini de se charger : jusque-là, le navigateur n'ouvre pas
+        // de nouveau document, il écrit dans celui-ci — et le prototype y perd ses feuilles. Avec
+        // la clé retenue, tout est prêt avant la fin du chargement : il faut l'attendre.
+        function montrer(page) {
+          if (document.readyState !== 'complete') {
+            window.addEventListener('load', function () {
+              montrer(page);
+            });
+            return;
+          }
+          document.open();
+          document.write(page);
+          document.close();
+        }
+
+        function valider() {
+          var motDePasse = saisie.value.trim();
+          if (!motDePasse) return dire('Saisissez le mot de passe.');
+
+          erreur.hidden = true;
+          bouton.disabled = true;
+          bouton.textContent = 'Ouverture…';
+          deriver(motDePasse)
+            .then(function (cle) {
+              return ouvrir(cle).then(function (page) {
+                retenir(texte(cle));
+                montrer(page);
+              });
+            })
+            .catch(function () {
+              demander();
+              dire('Ce mot de passe n’ouvre pas le prototype.');
+              saisie.select();
+            });
+        }
+
+        formulaire.addEventListener('submit', function (evenement) {
+          evenement.preventDefault();
+          quandOnValide();
+        });
+
+        // Sans clé retenue, le verrou se montre tout de suite : le prototype chiffré, lui, peut
+        // mettre du temps à arriver. Avec une clé, rien ne se montre — l'écran suit.
+        var retenue = cleRetenue();
+        if (!retenue) {
+          verrou.hidden = false;
+          bouton.disabled = true;
+          bouton.textContent = 'Chargement…';
+          saisie.focus();
+        }
+
+        // Appelée une fois le prototype chiffré arrivé — ou manqué.
+        window.TenanciaVerrou = function () {
+          charge = window.TenanciaPrototypeChiffre || null;
+          if (!charge) {
+            quandOnValide = function () {
+              window.location.reload();
+            };
+            demander('Réessayer');
+            return dire('Le prototype n’a pas pu se charger. Vérifiez votre connexion, puis réessayez.');
+          }
+          if (!window.crypto || !window.crypto.subtle) {
+            verrou.hidden = false;
+            bouton.disabled = true;
+            bouton.textContent = 'Ouvrir le prototype';
+            return dire('Ce navigateur ne peut pas ouvrir le prototype ici. Ouvrez-le par son adresse en https.');
+          }
+          quandOnValide = valider;
+          if (!retenue) return demander();
+          ouvrir(octets(retenue))
+            .then(montrer)
+            .catch(function () {
+              oublier();
+              demander();
+            });
+        };
+      })();
+    </script>
+    <script src="prototype-866dd1a3ef0a.js"></script>
+    <script>
+      window.TenanciaVerrou();
+    </script>
+  </body>
+</html>
